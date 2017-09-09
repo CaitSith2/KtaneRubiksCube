@@ -23,6 +23,8 @@ public class RubiksCubeModule : MonoBehaviour
     public Transform OffAxis;
     public Transform OnAxis;
 
+    public Transform Cube;
+
     public Mesh ArrowNSWE;
     public Mesh Arrow;
 
@@ -492,6 +494,12 @@ public class RubiksCubeModule : MonoBehaviour
         if (_isSolved)
             yield break;
 
+        while (_queue.Count > 0)
+        {
+            yield return new WaitForSeconds(.1f);
+            yield return "trycancel";
+        }
+
         if (command.Trim().Equals("reset", StringComparison.InvariantCultureIgnoreCase))
         {
             Reset.OnInteract();
@@ -502,39 +510,29 @@ public class RubiksCubeModule : MonoBehaviour
         if (command.Trim().Equals("rotate", StringComparison.InvariantCultureIgnoreCase))
         {
             yield return null;
+            const int angle = 75;
 
-            bool frontFace = transform.root.eulerAngles.z < 1;  //eulerAngles.z = 0 on front face, 180 on back face.
-            const int angle = 60;
-
-            for (float i = 0; i <= angle; i += getRotateRate(0.5f, 150))
+            for (float i = 0; i < angle; i += getRotateRate(2, 300))
             {
-                yield return frontFace
-                    ? Quaternion.Euler(easeInOutQuad(i, 0, angle, angle), 0, 0)
-                    : Quaternion.Euler(easeInOutQuad(i, 0, -angle, angle), 0, 0);
+                Cube.localEulerAngles = new Vector3(30 - i, 65 + ((i/angle)*55), 55 - ((i/angle)*10));
                 yield return null;
             }
-            for (float i = 0; i <= 360; i += getRotateRate(10, 750))
+            Cube.localEulerAngles = new Vector3(Mathf.Round(-45), Mathf.Round(120), Mathf.Round(45));
+            yield return new WaitForSeconds(2f);
+            for (float i = 0; i < angle; i += getRotateRate(2, 300))
             {
-                yield return frontFace
-                    ? Quaternion.Euler(angle, 0, 0) * Quaternion.Euler(0, easeInOutQuad(i, 0, 360, 360), 0)
-                    : Quaternion.Euler(-angle, 0, 0) * Quaternion.Euler(0, easeInOutQuad(i, 0, -360, 360), 0);
+                Cube.localEulerAngles = new Vector3(-45 + i, 120 - ((i / angle) * 55), 45 + ((i / angle) * 100));
                 yield return null;
             }
-            for (float i = 0; i <= angle; i += getRotateRate(0.5f, 150))
+            Cube.localEulerAngles = new Vector3(Mathf.Round(30), Mathf.Round(65), Mathf.Round(145));
+            yield return new WaitForSeconds(2f);
+            for (float i = 0; i < angle; i += getRotateRate(2, 300))
             {
-                yield return frontFace
-                    ? Quaternion.Euler(easeInOutQuad(i, angle, 0, angle), 0, 0)
-                    : Quaternion.Euler(easeInOutQuad(i, -angle, 0, angle), 0, 0);
+                Cube.localEulerAngles = new Vector3(Mathf.Round(30), Mathf.Round(65), 145 - ((i / angle) * 90));
                 yield return null;
             }
-            yield return Quaternion.Euler(0, 0, 0);
+            Cube.localEulerAngles = new Vector3(Mathf.Round(30), Mathf.Round(65), Mathf.Round(55));
             yield break;
-        }
-
-        while (_queue.Count > 0)
-        {
-            yield return new WaitForSeconds(.1f);
-            yield return "trycancel";
         }
 
         var rotations = new List<FaceRotation>();

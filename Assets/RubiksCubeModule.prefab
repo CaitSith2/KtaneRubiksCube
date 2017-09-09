@@ -8643,6 +8643,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 873e8d79c201b1747938d94c9f5c9e93, type: 2}
   OffAxis: {fileID: 4000013849328254}
   OnAxis: {fileID: 4000011757126956}
+  Cube: {fileID: 4000010759135422}
   ArrowNSWE: {fileID: 4300000, guid: 562515495b58f474394a42f233576d8e, type: 3}
   Arrow: {fileID: 4300000, guid: cd61fabf9f59f8649a46c7c4d00fffc0, type: 3}
 --- !u!114 &114000013313338118
